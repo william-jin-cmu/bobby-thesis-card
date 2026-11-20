@@ -1,0 +1,15 @@
+.DS_Store
+/build/
+/clips/
+/clips-v2/
+fonts-src/
+/shots/
+xcuserdata/
+video/node_modules/
+video/.hypit/
+video/out/
+video/work/
+video/review/
+video/pnpm-lock.yaml
+video/assets/fonts/NotoSerifSC-Medium.otf
+video/assets/audio/

@@ -1,0 +1,72 @@
+<?svml using="@hypit/markup@1"?>
+
+<!-- Bobby AI 「观点卡」 product film. All picture is code-rendered by the project component
+     @bobby/thesis-film (packages/thesis-film): one phone, eight simulator recordings, camera
+     punch-ins, word-by-word captions, step rail, hook and outro. No generation, no speech. Sound is an original
+     music bed + UI effects synthesized by audio/make_soundtrack.py, locked to the same frame grid. -->
+<svml>
+  <import as="time" from="@hypit/timeline-author@1"/>
+  <import as="space" from="@hypit/spatial@1"/>
+  <import as="asset" from="@hypit/media@1"/>
+  <import as="media" from="@hypit/media@1"/>
+  <import as="mediaop" from="@hypit/media-operations@1"/>
+  <import as="fonts" from="@hypit/fontsource@1"/>
+  <import as="bobby" from="@bobby/thesis-film@1"/>
+  <import as="film" from="@hypit/film@1"/>
+  <import as="html" from="@hypit/html-video@1"/>
+  <import as="audio" from="@hypit/audio-track@1"/>
+  <import as="look" source="./look.svs"/>
+
+  <space:Canvas id="vertical" width="1080" height="1920"/>
+  <time:Clock id="clock" frame-rate="30"/>
+  <!-- Length is fixed by the storyboard inside the component (it checks this value). -->
+  <time:Timeline id="program" clock={clock} end="1408f"/>
+
+  <asset:Font id="serif-face" src="./assets/fonts/NotoSerifSC-SemiBold.otf" weight="600" style="normal"/>
+  <media:FontStack id="serif" primary={serif-face}/>
+  <fonts:Face id="inter-bold" package="@fontsource-variable/inter" weight="700" style="normal"/>
+  <fonts:Face id="noto-bold" package="@fontsource-variable/noto-sans-sc" weight="700" style="normal"/>
+  <media:FontStack id="sans" primary={inter-bold}><media:Fallback font={noto-bold}/></media:FontStack>
+  <fonts:Face id="inter-medium" package="@fontsource-variable/inter" weight="500" style="normal"/>
+  <fonts:Face id="noto-medium" package="@fontsource-variable/noto-sans-sc" weight="500" style="normal"/>
+  <media:FontStack id="sansm" primary={inter-medium}><media:Fallback font={noto-medium}/></media:FontStack>
+
+  <asset:Video id="home-src" src="./assets/clips/home.mp4"/>
+  <mediaop:Normalize id="home" source={home-src} video="primary-moving" audio="none" span-authority="video" clock={clock}/>
+  <asset:Video id="chat-src" src="./assets/clips/chat.mp4"/>
+  <mediaop:Normalize id="chat" source={chat-src} video="primary-moving" audio="none" span-authority="video" clock={clock}/>
+  <asset:Video id="profile-src" src="./assets/clips/profile.mp4"/>
+  <mediaop:Normalize id="profile" source={profile-src} video="primary-moving" audio="none" span-authority="video" clock={clock}/>
+  <asset:Video id="order-src" src="./assets/clips/order.mp4"/>
+  <mediaop:Normalize id="order" source={order-src} video="primary-moving" audio="none" span-authority="video" clock={clock}/>
+  <asset:Video id="watch-src" src="./assets/clips/watch.mp4"/>
+  <mediaop:Normalize id="watch" source={watch-src} video="primary-moving" audio="none" span-authority="video" clock={clock}/>
+  <asset:Video id="banner-src" src="./assets/clips/banner.mp4"/>
+  <mediaop:Normalize id="banner" source={banner-src} video="primary-moving" audio="none" span-authority="video" clock={clock}/>
+  <asset:Video id="review-src" src="./assets/clips/review.mp4"/>
+  <mediaop:Normalize id="review" source={review-src} video="primary-moving" audio="none" span-authority="video" clock={clock}/>
+  <asset:Video id="theses-src" src="./assets/clips/theses.mp4"/>
+  <mediaop:Normalize id="theses" source={theses-src} video="primary-moving" audio="none" span-authority="video" clock={clock}/>
+
+  <asset:Audio id="music-src" src="./assets/audio/music.wav"/>
+  <mediaop:Normalize id="music-media" source={music-src} clock={clock} video="none" audio="default" span-authority="audio"/>
+  <asset:Audio id="sfx-src" src="./assets/audio/sfx.wav"/>
+  <mediaop:Normalize id="sfx-media" source={sfx-src} clock={clock} video="none" audio="default" span-authority="audio"/>
+  <time:Window id="music-window" timeline={program.timeline} from="0f" for="1408f"/>
+  <time:Window id="sfx-window" timeline={program.timeline} from="0f" for="1408f"/>
+  <audio:Track id="sound" timeline={program.timeline}>
+    <audio:Clip id="music" source={music-media.media} during={music-window} gain="0.7" fade-out="12f"/>
+    <audio:Clip id="sfx" source={sfx-media.media} during={sfx-window} gain="1.3"/>
+  </audio:Track>
+
+  <bobby:Film id="scene" timeline={program.timeline} during={program.window} within={vertical.bounds}
+    serif={serif} sans={sans} sansm={sansm}
+    home={home.media} chat={chat.media} profile={profile.media} order={order.media}
+    watch={watch.media} banner={banner.media} review={review.media} theses={theses.media}/>
+
+  <film:Film id="main" canvas={vertical.canvas} timeline={program.timeline} appearance={look.film.vertical}>
+    <film:Track source={scene.visual}/>
+    <film:Track source={sound.audio}/>
+  </film:Film>
+  <html:Video id="final" composition={main.composition} timeline={program.timeline}/>
+</svml>

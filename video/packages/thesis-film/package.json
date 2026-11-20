@@ -1,0 +1,8 @@
+{
+  "name": "@bobby/thesis-film",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "hypit": { "activation": "./src/activation.ts" },
+  "exports": { ".": "./src/render.ts" }
+}
